@@ -1,0 +1,62 @@
+---
+
+- include: "nmap/install/main.yml"
+
+
+- set_fact:
+    nmap_build: "/usr/src/nmap"
+  tags:
+    - always
+
+
+- debug:
+    msg:
+      - "nmap build folder: {{ nmap_build }}"
+
+
+- name: Remove existing nmap build folder
+  file:
+    path: "{{ nmap_build }}"
+    state: absent
+
+
+- name: Create nmap build folder
+  file:
+    path: "{{ nmap_build }}"
+    state: directory
+
+
+- debug:
+    msg:
+      - "nmap git repo: {{ nmap_git_repo }}"
+      - "nmap git tag: {{ nmap_git_tag }}"
+      - "nmap git refspec: {{ nmap_git_refspec }}"
+
+
+- name: Git checkout of nmap
+  git:
+    repo: "{{ nmap_git_repo }}"
+    dest: "{{ nmap_build }}"
+    depth: 1
+    version: "{{ nmap_git_tag }}"
+    refspec: "{{ nmap_git_refspec }}"
+    #force: yes
+
+
+- name: Setup nmap build
+  command:
+    cmd: "./configure --prefix=/usr/local"
+    chdir: "{{ nmap_build }}"
+
+
+- name: Build nmap
+  community.general.make:
+    chdir: "{{ nmap_build }}"
+
+
+- name: Install nmap
+  community.general.make:
+    target: install
+    chdir: "{{ nmap_build }}"
+
+

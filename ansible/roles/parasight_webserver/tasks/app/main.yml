@@ -1,0 +1,107 @@
+---
+
+- name: Add the parasight user
+  user:
+    name: parasight
+    shell: /bin/bash
+    create_home: yes
+    home: /home/parasight
+    comment: Parasight service account
+
+
+
+- name: Set parasight home permissions
+  file:
+    path: /home/parasight
+    mode: '0711'
+
+
+- name: Create parasight git folder
+  file:
+    path: /home/parasight/git
+    state: directory
+    owner: parasight
+    group: parasight
+    mode: '0755'
+  register: parasight_git_folder
+
+
+- name: Checkout parasight code
+  git:
+    repo: 'git@github.com:aaronwmorris/parasight.git'
+    dest: /home/parasight/git/parasight
+    umask: '0022'
+    accept_hostkey: yes
+  when:
+    - parasight_git_folder.changed
+
+
+
+- name: Change ownership of checkout
+  file:
+    path: /home/parasight/git/parasight
+    state: directory
+    owner: parasight
+    group: parasight
+    recurse: yes
+
+
+
+- name: Create virtualenv directory
+  file:
+    path: /home/parasight/virtualenv
+    state: directory
+    owner: parasight
+    group: parasight
+    mode: '0755'
+  register: parasight_virtualenv_folder
+
+
+- name: Create parasight virtualenv
+  pip:
+    virtualenv_python: "{{ parasight_python }}"
+    requirements: /home/parasight/git/parasight/requirements.txt
+    virtualenv: "/home/parasight/virtualenv/parasight_{{ parasight_python }}"
+    umask: '0022'
+  become: true
+  become_user: parasight
+  when:
+    - parasight_virtualenv_folder.changed
+
+
+#- name: Template parasight settings.py
+#  template:
+#    src: ../../../../mysite/settings.py_template
+#    dest: /home/parasight/git/parasight/mysite/settings.py
+#    owner: parasight
+#    group: parasight
+#    mode: '0755'
+
+
+#- name: Template parasight wsgi.py
+#  template:
+#    src: ../../../../mysite/wsgi.py_template
+#    dest: /home/parasight/git/parasight/mysite/wsgi.py
+#    owner: parasight
+#    group: parasight
+#    mode: '0755'
+
+
+
+
+#- name: Create parasight migrations
+#  shell:
+#    cmd: "umask 022; /home/parasight/virtualenv/parasight_{{ parasight_python }}/bin/python ./manage.py makemigrations parasight"
+#    chdir: /home/parasight/git/parasight
+#  become: true
+#  become_user: parasight
+
+
+#- name: Apply django migrations
+#  shell:
+#    cmd: "umask 022; /home/parasight/virtualenv/parasight_{{ parasight_python }}/bin/python ./manage.py migrate"
+#    chdir: /home/parasight/git/parasight
+#  become: true
+#  become_user: parasight
+
+

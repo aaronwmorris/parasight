@@ -1,0 +1,51 @@
+---
+
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+
+
+- name: install packages for apt-key (debian)
+  package:
+    name:
+      - apt-transport-https
+      - gpg
+    state: latest
+
+
+
+- name: Add rabbitmq apt keys
+  apt_key:
+    url: "{{ item }}"
+    state: present
+  with_items:
+    - https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA
+    - https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key
+    - https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key
+
+
+
+- name: Add erlang repository (debian)
+  apt_repository:
+    repo: "{{ item }}"
+    filename: "cloudsmith-rabbitmq"
+    update_cache: no
+    state: present
+  with_items:
+    - "deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/{{ ansible_facts['distribution'] | lower }} {{ ansible_facts['distribution_release'] }} main"
+    - "deb-src https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/{{ ansible_facts['distribution'] | lower }} {{ ansible_facts['distribution_release'] }} main"
+    - "deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/{{ ansible_facts['distribution'] | lower }} {{ ansible_facts['distribution_release'] }} main"
+    - "deb-src https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/{{ ansible_facts['distribution'] | lower }} {{ ansible_facts['distribution_release'] }} main"
+
+
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+
+
+
+- name: install rabbitmq packages
+  package:
+    name: "{{ packages }}"
+    state: present
+

@@ -1,0 +1,27 @@
+---
+# tasks file for parasight_common
+
+- name: Include OS Family vars
+  include_vars: "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+
+
+- name: Gather package facts
+  package_facts:
+    manager: auto
+
+
+- set_fact:
+    parasight_remove_packages:  "{{ parasight_blocking_packages | intersect(ansible_facts.packages) }}"
+
+
+- fail:
+    msg: "The following packages need to be removed before continuing: {{ parasight_remove_packages | join(', ')}}"
+  when:
+    - parasight_remove_packages | length > 0
+
+
+- include: install/main.yml
+
+
+- include: nmap/main.yml
+

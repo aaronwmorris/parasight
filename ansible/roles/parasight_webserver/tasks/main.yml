@@ -1,0 +1,16 @@
+---
+# tasks file for parasight_webserver
+
+
+- name: Include OS Family vars
+  include_vars: "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+
+
+- include: install/main.yml
+
+- include: service/main.yml
+
+- include: config/main.yml
+
+- include: app/main.yml
+

@@ -1,0 +1,19 @@
+---
+ansible_python_interpreter: python3
+packages:
+  - vim
+  - vim-syntastic
+  - flake8
+  - python3-flake8
+  - ctags
+nmap_dev_packages:
+  - build-essential
+  - autoconf
+  - libssl-dev
+  - libssh2-1-dev
+  - python2-dev
+  - python3-dev
+  - liblua5.3-dev
+parasight_remove_packages:
+  - nmap
+  - nmap-common

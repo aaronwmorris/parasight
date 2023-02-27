@@ -1,0 +1,12 @@
+---
+
+- name: Enable postgres
+  service:
+    name: "{{ postgres_service }}"
+    enabled: yes
+
+#- name: Start postgres
+#  service:
+#    name: "{{ postgres_service }}"
+#    state: started
+

@@ -1,0 +1,8 @@
+---
+# handlers file for parasight_rabbitmqserver
+
+- name: Restart rabbitmq
+  service:
+    name: "{{ rabbitmq_service }}"
+    state: restarted
+

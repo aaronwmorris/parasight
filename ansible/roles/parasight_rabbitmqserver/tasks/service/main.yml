@@ -1,0 +1,12 @@
+---
+
+- name: Enable rabbitmq
+  service:
+    name: "{{ rabbitmq_service }}"
+    enabled: yes
+
+- name: Start rabbitmq
+  service:
+    name: "{{ rabbitmq_service }}"
+    state: started
+

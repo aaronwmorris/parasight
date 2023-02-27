@@ -1,0 +1,12 @@
+---
+
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+
+
+- name: install web server packages
+  package:
+    name: "{{ packages }}"
+    state: present
+

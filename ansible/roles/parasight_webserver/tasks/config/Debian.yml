@@ -1,0 +1,202 @@
+---
+
+
+- name: create apache ssl directory
+  file:
+    path: "{{ apache_etc }}/ssl"
+    owner: root
+    group: root
+    mode: '0750'
+    state: directory
+
+
+
+- name: Generate an OpenSSL private key.
+  openssl_privatekey:
+    path: "{{ apache_etc }}/ssl/apache.key"
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+- name: Generate an OpenSSL CSR
+  openssl_csr:
+    path: "{{ apache_etc }}/ssl/apache.csr"
+    privatekey_path: "{{ apache_etc }}/ssl/apache.key"
+    common_name: apache
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ apache_etc }}/ssl/apache.crt"
+    privatekey_path: "{{ apache_etc }}/ssl/apache.key"
+    csr_path: "{{ apache_etc }}/ssl/apache.csr"
+    provider: selfsigned
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+
+- name: Copy public cert to CA file
+  copy:
+    src: "{{ apache_etc }}/ssl/apache.crt"
+    dest: "{{ apache_etc }}/ssl/ca_apache.crt"
+    owner: root
+    group: root
+    mode: '0644'
+    remote_src: yes
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+
+- name: Copy CA cert
+  copy:
+    src: "{{ parasight_ssl_ca }}"
+    dest: "{{ apache_etc }}/ssl/ca_apache.crt"
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+
+- name: Copy SSL cert
+  copy:
+    src: "{{ parasight_ssl_crt }}"
+    dest: "{{ apache_etc }}/ssl/apache.crt"
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+- name: Copy SSL private key
+  copy:
+    src: "{{ parasight_ssl_key }}"
+    dest: "{{ apache_etc }}/ssl/apache.key"
+    owner: root
+    group: root
+    mode: '0640'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+
+
+- name: Change public cert ownership
+  file:
+    path: "{{ apache_etc }}/ssl/apache.crt"
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Change private key ownership
+  file:
+    path: "{{ apache_etc }}/ssl/apache.key"
+    owner: root
+    group: root
+    mode: '0640'
+
+
+
+
+- name: enable apache modules
+  file:
+    src: "../mods-available/{{ item }}"
+    path: "{{ apache_etc }}/mods-enabled/{{ item }}"
+    state: link
+    force: yes
+  with_items: "{{ apache_mods }}"
+
+
+
+- name: Find apache sites to remove (links)
+  find:
+    paths: "{{ apache_etc }}/sites-enabled"
+    file_type: link
+    patterns: '*'
+  register: sites_to_delete_links
+
+- name: Remove existing sites (links)
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ sites_to_delete_links.files }}"
+
+
+- name: Find apache sites to remove (files)
+  find:
+    paths: "{{ apache_etc }}/sites-enabled"
+    file_type: file
+    patterns: '*'
+  register: sites_to_delete_files
+
+- name: Remove existing sites (files)
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ sites_to_delete_files.files }}"
+
+
+
+
+- name: Template parasight apache site
+  template:
+    src: "apache/{{ item }}.j2"
+    dest: "{{ apache_etc }}/sites-available/{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - parasight.conf
+    - hardening.conf
+  notify: Restart apache
+
+
+- name: enable parasight site
+  file:
+    src: "../sites-available/{{ item }}"
+    path: "{{ apache_etc }}/sites-enabled/{{ item }}"
+    state: link
+    force: yes
+  with_items:
+    - parasight.conf
+    - hardening.conf
+  notify: Restart apache
+
+
+
+- name: Create parasight log folder
+  file:
+    path: /var/log/parasight
+    state: directory
+    owner: "{{ rsyslog_user }}"
+    group: "{{ rsyslog_group }}"
+    mode: '0770'
+
+
+- name: Create parasight log
+  file:
+    path: /var/log/parasight/parasight.log
+    state: touch
+    owner: "{{ rsyslog_user }}"
+    group: "{{ rsyslog_group }}"
+    mode: '0640'
+
+
+- name: Setup parasight syslog
+  copy:
+    src: rsyslog.d/99-parasight.conf
+    dest: /etc/rsyslog.d/99-parasight.conf
+    owner: root
+    group: root
+    mode: '0640'
+  notify: Restart rsyslog
+
+
+- name: Setup parasight log rotation
+  copy:
+    src: logrotate.d/parasight-syslog
+    dest: /etc/logrotate.d/parasight-syslog
+    owner: root
+    group: root
+    mode: '0644'
+

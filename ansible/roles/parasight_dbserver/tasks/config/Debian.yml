@@ -1,0 +1,195 @@
+---
+
+
+- name: create postgres ssl directory
+  file:
+    path: "{{ postgres_etc }}/ssl"
+    owner: root
+    group: "{{ postgres_group }}"
+    mode: '0750'
+    state: directory
+
+
+
+- name: Generate an OpenSSL private key.
+  openssl_privatekey:
+    path: "{{ postgres_etc }}/ssl/postgres.key"
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+- name: Generate an OpenSSL CSR
+  openssl_csr:
+    path: "{{ postgres_etc }}/ssl/postgres.csr"
+    privatekey_path: "{{ postgres_etc }}/ssl/postgres.key"
+    common_name: apache
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ postgres_etc }}/ssl/postgres.crt"
+    privatekey_path: "{{ postgres_etc }}/ssl/postgres.key"
+    csr_path: "{{ postgres_etc }}/ssl/postgres.csr"
+    provider: selfsigned
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+
+- name: Copy public cert to CA file
+  copy:
+    src: "{{ postgres_etc }}/ssl/postgres.crt"
+    dest: "{{ postgres_etc }}/ssl/ca_postgres.crt"
+    owner: root
+    group: "{{ postgres_group }}"
+    mode: '0644'
+    remote_src: yes
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+
+
+- name: Copy CA cert
+  copy:
+    src: "{{ parasight_ssl_ca }}"
+    dest: "{{ postgres_etc }}/ssl/ca_postgres.crt"
+    owner: root
+    group: "{{ postgres_group }}"
+    mode: '0644'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+
+- name: Copy SSL cert
+  copy:
+    src: "{{ parasight_ssl_crt }}"
+    dest: "{{ postgres_etc }}/ssl/postgres.crt"
+    owner: root
+    group: "{{ postgres_group }}"
+    mode: '0644'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+- name: Copy SSL private key
+  copy:
+    src: "{{ parasight_ssl_key }}"
+    dest: "{{ postgres_etc }}/ssl/postgres.key"
+    owner: root
+    group: "{{ postgres_group }}"
+    mode: '0640'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+
+
+- name: Change public cert ownership
+  file:
+    path: "{{ postgres_etc }}/ssl/postgres.crt"
+    owner: root
+    group: "{{ postgres_group }}"
+    mode: '0644'
+
+
+- name: Change private key ownership
+  file:
+    path: "{{ postgres_etc }}/ssl/postgres.key"
+    owner: root
+    group: "{{ postgres_group }}"
+    mode: '0640'
+
+
+
+- name: Manual update certs
+  lineinfile:
+    path: "{{ postgres_etc }}/postgresql.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - regexp: '#?ssl_ca_file'
+      line: "ssl_ca_file = '{{ postgres_etc }}/ssl/ca_postgres.crt'"
+    - regexp: '#?ssl_cert_file'
+      line: "ssl_cert_file = '{{ postgres_etc }}/ssl/postgres.crt'"
+    - regexp: '#?ssl_key_file'
+      line: "ssl_key_file = '{{ postgres_etc }}/ssl/postgres.key'"
+  register: manual_cert_update
+
+
+- name: Restart postgres
+  service:
+    name: "{{ postgres_service }}"
+    state: restarted
+  when: manual_cert_update.changed
+
+
+- name: Enable postgres settings
+  postgresql_set:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    port: "{{ pg_login_port }}"
+  become: true
+  become_user: "{{ postgres_user }}"
+  with_dict:
+    listen_addresses: '*'
+    ssl: 'on'
+    ssl_ca_file: "{{ postgres_etc }}/ssl/ca_postgres.crt"
+    ssl_cert_file: "{{ postgres_etc }}/ssl/postgres.crt"
+    ssl_key_file: "{{ postgres_etc }}/ssl/postgres.key"
+    ssl_ciphers: "{{ pg_ssl_ciphers }}"
+    password_encryption: "{{ pg_password_encryption }}"
+    ssl_min_protocol_version: "{{ pg_ssl_min_protocol_version }}"
+  notify: Restart postgres
+
+
+
+- name: Setup postgres local pg_hba
+  postgresql_pg_hba:
+    dest: "{{ postgres_etc }}/pg_hba.conf"
+    contype: local
+    users: "{{ parasight_db_user }}"
+    databases: "{{ parasight_db_name }}"
+    method: "{{ pg_password_encryption }}"
+  notify: Restart postgres
+
+
+
+- name: Setup postgres samenet pg_hba
+  postgresql_pg_hba:
+    dest: "{{ postgres_etc }}/pg_hba.conf"
+    contype: hostssl
+    users: "{{ parasight_db_user }}"
+    address: all
+    databases: "{{ parasight_db_name }}"
+    method: "{{ pg_password_encryption }}"
+  notify: Restart postgres
+
+
+
+- name: Setup parasight db user
+  postgresql_user:
+    name: "{{ parasight_db_user }}"
+    password: "{{ parasight_db_passwd }}"
+    port: "{{ pg_login_port }}"
+  become: true
+  become_user: "{{ postgres_user }}"
+
+
+
+- name: Create parasight DB
+  postgresql_db:
+    name: "{{ parasight_db_name }}"
+    encoding: UTF-8
+    owner: "{{ parasight_db_user }}"
+    port: "{{ pg_login_port }}"
+  become: true
+  become_user: "{{ postgres_user }}"
+
+
+
+- name: Add pgcrypto extension
+  postgresql_ext:
+    name: pgcrypto
+    db: "{{ parasight_db_name }}"
+    state: present
+    port: "{{ pg_login_port }}"
+  become: true
+  become_user: "{{ postgres_user }}"
+

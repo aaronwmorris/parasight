@@ -1,0 +1,7 @@
+Package: nmap
+Pin: release *
+Pin-Priority: -1
+
+Package: nmap-common
+Pin: release *
+Pin-Priority: -1

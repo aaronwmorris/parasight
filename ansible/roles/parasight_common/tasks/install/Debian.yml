@@ -1,0 +1,21 @@
+---
+
+- name: Block nmap system package
+  copy:
+    src: apt_pref/block_nmap.pref
+    dest: /etc/apt/preferences.d
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+
+
+- name: install common packages
+  package:
+    name: "{{ packages }}"
+    state: present
+

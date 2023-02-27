@@ -1,0 +1,54 @@
+- hosts: all
+  pre_tasks:
+    - name: Verify Ansible is a modern version
+      assert:
+        that: "ansible_version.full is version_compare('2.9', '>=')"
+        msg: >
+          "You must update Ansible to at least 2.9"
+
+
+
+- hosts: dbservers
+  remote_user: "{{ ansible_ssh_user }}"
+  become: yes
+  become_method: sudo
+  roles:
+    - parasight_dbserver
+  tags:
+    - parasight_dbserver_role
+
+
+
+- hosts: rabbitmqservers
+  remote_user: "{{ ansible_ssh_user }}"
+  become: yes
+  become_method: sudo
+  roles:
+    - parasight_rabbitmqserver
+  tags:
+    - parasight_rabbitmqserver_role
+    - parasight_mqserver_role
+
+
+
+- hosts: webservers
+  remote_user: "{{ ansible_ssh_user }}"
+  become: yes
+  become_method: sudo
+  become_flags: '-HE'
+  roles:
+    - parasight_webserver
+  tags:
+    - parasight_webserver_role
+
+
+
+- hosts: webservers
+  remote_user: "{{ ansible_ssh_user }}"
+  become: yes
+  become_method: sudo
+  become_flags: '-HE'
+  roles:
+    - parasight_common
+  tags:
+    - parasight_common_role

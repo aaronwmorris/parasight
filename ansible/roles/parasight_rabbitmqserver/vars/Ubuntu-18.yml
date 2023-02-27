@@ -1,0 +1,9 @@
+---
+ansible_python_interpreter: python3
+rabbitmq_etc: /etc/rabbitmq
+rabbitmq_service: rabbitmq-server
+rabbitmq_user: rabbitmq
+rabbitmq_group: rabbitmq
+packages:
+  - rabbitmq-server
+  - python3-cryptography

@@ -1,0 +1,18 @@
+all:
+  hosts:
+    parasight-dev:
+  children:
+    scan_master:
+      hosts:
+        parasight-dev:
+    webservers:
+      hosts:
+        parasight-dev:
+    rabbitmqservers:
+      hosts:
+        parasight-dev:
+    dbservers:
+      hosts:
+        parasight-dev:
+  vars:
+    ansible_ssh_user: scanadmin

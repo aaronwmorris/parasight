@@ -1,0 +1,13 @@
+---
+
+
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+
+
+- name: Install nmap development packages
+  package:
+    name: "{{ nmap_dev_packages }}"
+    state: present
+

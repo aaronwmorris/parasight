@@ -1,0 +1,45 @@
+#Listen *:80
+#Listen *:443
+
+<VirtualHost *:80>
+ RewriteEngine On
+
+ # Make sure mod_status is accessible via HTTP
+ #RewriteCond %{REQUEST_URI} ^/server-status
+ #RewriteRule ^ - [L]
+
+ # Redirect all other requests to HTTPS
+ RewriteCond %{HTTPS} off
+ RewriteRule ^/(.*) https://%{SERVER_NAME}/$1 [R,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ProxyPreserveHost On
+    ProxyPass /static !
+    ProxyPass / unix:/tmp/gunicorn.sock
+    ProxyPassReverse / unix:/tmp/gunicorn.sock
+    #ProxyTimeout 180
+
+    Alias /static/parasight /home/parasight/git/parasight/parasight/static/parasight
+    Alias /static /home/parasight/virtualenv/parasight_{{ parasight_python }}/lib/{{ parasight_python_ver }}/site-packages/django/contrib/admin/static
+
+    SSLEngine On
+    SSLCertificateChainFile {{ apache_etc }}/ssl/ca_apache.crt
+    SSLCertificateFile {{ apache_etc }}/ssl/apache.crt
+    SSLCertificateKeyFile {{ apache_etc }}/ssl/apache.key
+
+    Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains"
+
+    <Directory /home/parasight/git/parasight>
+        Allow from all
+        Require all granted
+    </Directory>
+
+    <Directory /home/parasight/virtualenv/parasight_{{ parasight_python }}/lib/{{ parasight_python_ver }}/site-packages>
+        Allow from all
+        Require all granted
+    </Directory>
+
+    TimeOut 300
+</VirtualHost>
+

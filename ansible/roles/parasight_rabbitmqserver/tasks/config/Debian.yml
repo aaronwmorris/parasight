@@ -1,0 +1,176 @@
+---
+
+
+- name: create rabbitmq ssl directory
+  file:
+    path: "{{ rabbitmq_etc }}/ssl"
+    owner: root
+    group: "{{ rabbitmq_group }}"
+    mode: '0750'
+    state: directory
+
+
+
+- name: Generate an OpenSSL private key.
+  openssl_privatekey:
+    path: "{{ rabbitmq_etc }}/ssl/rabbitmq.key"
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+- name: Generate an OpenSSL CSR
+  openssl_csr:
+    path: "{{ rabbitmq_etc }}/ssl/rabbitmq.csr"
+    privatekey_path: "{{ rabbitmq_etc }}/ssl/rabbitmq.key"
+    common_name: rabbitmq
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ rabbitmq_etc }}/ssl/rabbitmq.crt"
+    privatekey_path: "{{ rabbitmq_etc }}/ssl/rabbitmq.key"
+    csr_path: "{{ rabbitmq_etc }}/ssl/rabbitmq.csr"
+    provider: selfsigned
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+
+- name: Copy public cert to CA file
+  copy:
+    src: "{{ rabbitmq_etc }}/ssl/rabbitmq.crt"
+    dest: "{{ rabbitmq_etc }}/ssl/ca_rabbitmq.crt"
+    owner: root
+    group: "{{ rabbitmq_group }}"
+    mode: '0644'
+    remote_src: yes
+  when:
+    - parasight_ssl_crt == 'selfsigned'
+
+
+
+- name: Copy CA cert
+  copy:
+    src: "{{ parasight_ssl_ca }}"
+    dest: "{{ rabbitmq_etc }}/ssl/ca_rabbitmq.crt"
+    owner: root
+    group: "{{ rabbitmq_group }}"
+    mode: '0644'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+
+- name: Copy SSL cert
+  copy:
+    src: "{{ parasight_ssl_crt }}"
+    dest: "{{ rabbitmq_etc }}/ssl/rabbitmq.crt"
+    owner: root
+    group: "{{ rabbitmq_group }}"
+    mode: '0644'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+- name: Copy SSL private key
+  copy:
+    src: "{{ parasight_ssl_key }}"
+    dest: "{{ rabbitmq_etc }}/ssl/rabbitmq.key"
+    owner: root
+    group: "{{ rabbitmq_group }}"
+    mode: '0640'
+  when:
+    - parasight_ssl_crt != 'selfsigned'
+
+
+- name: Change public cert ownership
+  file:
+    path: "{{ rabbitmq_etc }}/ssl/rabbitmq.crt"
+    owner: root
+    group: "{{ rabbitmq_group }}"
+    mode: '0644'
+
+
+
+- name: Change private key ownership
+  file:
+    path: "{{ rabbitmq_etc }}/ssl/rabbitmq.key"
+    owner: root
+    group: "{{ rabbitmq_group }}"
+    mode: '0640'
+
+
+### Old style
+#- name: Template rabbitmq config
+#  template:
+#    src: etc/rabbitmq/rabbitmq.config.j2
+#    dest: "{{ rabbitmq_etc }}/rabbitmq.config"
+#    owner: root
+#    group: "{{ rabbitmq_group }}"
+#    mode: '0644'
+#  notify: Restart rabbitmq
+
+
+### New Style
+- name: Template rabbitmq config
+  template:
+    src: etc/rabbitmq/rabbitmq.conf.j2
+    dest: "{{ rabbitmq_etc }}/rabbitmq.conf"
+    owner: root
+    group: "{{ rabbitmq_group }}"
+    mode: '0644'
+  notify: Restart rabbitmq
+
+
+
+- name: Enable rabbitmq management plugin
+  rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+
+
+
+- name: Create parasight rabbitmq vhost
+  rabbitmq_vhost:
+    name: "{{ parasight_rabbitmq_vhost }}"
+    state: present
+
+
+- name: Create parasight rabbitmq user
+  rabbitmq_user:
+    user: "{{ parasight_rabbitmq_user }}"
+    password: "{{ parasight_rabbitmq_passwd }}"
+    state: present
+
+
+- name: Set parasight rabbitmq user permissions
+  rabbitmq_user:
+    user: "{{ parasight_rabbitmq_user }}"
+    vhost: "{{ parasight_rabbitmq_vhost }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    tags: management
+    state: present
+
+
+- name: create rabbitmq systemd customization folder
+  file:
+    path: /etc/systemd/system/rabbitmq-server.service.d
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory
+
+
+- name: systemd limits for rabbitmq
+  template:
+    src: systemd/rabbitmq_limits.conf.j2
+    dest: /etc/systemd/system/rabbitmq-server.service.d/limits.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart rabbitmq
+
+
+- name: force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+

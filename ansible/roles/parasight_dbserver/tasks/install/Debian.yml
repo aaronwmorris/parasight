@@ -1,0 +1,34 @@
+---
+
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+
+
+- name: install packages for apt-key (debian)
+  package:
+    name:
+      - apt-transport-https
+      - gpg
+    state: latest
+
+
+- name: Add postgres apt key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+
+- name: Add postgres repository (debian)
+  apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_facts['distribution_release'] }}-pgdg main"
+    filename: "pgdg"
+    update_cache: yes
+    state: present
+
+
+- name: install postgres db packages
+  package:
+    name: "{{ packages }}"
+    state: present
+

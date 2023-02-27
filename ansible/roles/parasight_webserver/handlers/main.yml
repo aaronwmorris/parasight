@@ -1,0 +1,13 @@
+---
+# handlers file for parasight_webserver
+
+- name: Restart apache
+  service:
+    name: "{{ apache_service }}"
+    state: restarted
+
+- name: Restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+

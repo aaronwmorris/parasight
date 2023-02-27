@@ -1,0 +1,33 @@
+---
+ansible_python_interpreter: python3
+apache_service: apache2
+apache_etc: /etc/apache2
+packages:
+  - apache2
+  - build-essential
+  - postgresql-server-dev-all
+  - libffi-dev
+  - libldap2-dev
+  - libsasl2-dev
+  - apache2
+  - python3-cryptography
+  - git
+  - virtualenv
+  - python3-pip
+  - python3-virtualenv
+  - python3-setuptools
+  - python3-dev
+parasight_python: python3.8
+parasight_python_ver: python3.8
+parasight_pip: pip3
+apache_mods:
+  - proxy
+  - proxy_http
+  - ssl.load
+  - ssl.conf
+  - socache_shmcb.load
+  - http2.load
+  - rewrite.load
+  - headers.load
+rsyslog_user: root
+rsyslog_group: adm

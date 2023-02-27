@@ -1,0 +1,5 @@
+---
+# defaults file for parasight_common
+nmap_git_repo: https://github.com/nmap/nmap.git
+nmap_git_tag: HEAD
+nmap_git_refspec: +refs/heads/*:refs/remotes/origin/*

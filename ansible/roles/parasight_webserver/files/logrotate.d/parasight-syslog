@@ -1,0 +1,9 @@
+/var/log/parasight/parasight.log
+{
+        rotate 90
+        daily
+        missingok
+        notifempty
+        delaycompress
+        compress
+}

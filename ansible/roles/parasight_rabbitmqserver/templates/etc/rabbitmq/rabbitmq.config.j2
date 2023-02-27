@@ -1,0 +1,29 @@
+[
+  {rabbit, [
+     {ssl_listeners, [5671]},
+     {ssl_options, [{cacertfile, "{{ rabbitmq_etc }}/ssl/ca_rabbitmq.crt"},
+                    {certfile, "{{ rabbitmq_etc }}/ssl/rabbitmq.crt"},
+                    {keyfile, "{{ rabbitmq_etc }}/ssl/rabbitmq.key"},
+                    {versions, ['tlsv1.2']},
+                    %{ciphers,  [{ecdhe_ecdsa,aes_128_cbc,sha256},
+                    %            {ecdhe_ecdsa,aes_256_cbc,sha}
+                    %           ]
+                    %},
+                    {verify, verify_peer},
+                    {fail_if_no_peer_cert, false}
+                   ]
+     }
+   ]},
+  {rabbitmq_management, [
+     {listener, [{port,     15671},
+                 {ssl,      true},
+                 {ssl_opts, [{cacertfile, "{{ rabbitmq_etc }}/ssl/ca_rabbitmq.crt"},
+                             {certfile,   "{{ rabbitmq_etc }}/ssl/rabbitmq.crt"},
+                             {keyfile,    "{{ rabbitmq_etc }}/ssl/rabbitmq.key"},
+                             {versions,   ['tlsv1.2']}
+                            ]
+                 }
+                ]
+      }
+   ]}
+].

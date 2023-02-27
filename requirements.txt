@@ -1,0 +1,6 @@
+celery>=5.2.7,<5.3
+Django>=3.2.18,<3.3
+psycopg2
+SQLAlchemy
+django-auth-ldap
+gunicorn[gthread]

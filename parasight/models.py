@@ -287,7 +287,7 @@ class Network(models.Model):
         if source_ip == 'any':
             nmap_source = ''
         else:
-            nmap_source = '-S {0:s}'.format(source_ip)
+            nmap_source = '-S {0:s}'.format(str(source_ip))
 
         cmd = '/usr/local/bin/nmap -sn -PE -PP -PS22,80,389,443,445,636,1352,1414,1434,1521,2222,3306,3389,5432,5672,5984,8080,8443,9080,9043,9060,9200,9443,27017,50000 -n {0:s} -oX {1:s} {2:s}'.format(nmap_source, xml_filename, self.network)
         logger.info('Command: %s', cmd)
@@ -416,7 +416,7 @@ class Network(models.Model):
         if source_ip == 'any':
             nmap_source = ''
         else:
-            nmap_source = '-S {0:s}'.format(source_ip)
+            nmap_source = '-S {0:s}'.format(str(source_ip))
 
         cmd = nmap_command.format(timing, nmap_source, xml_filename, self.network)
         logger.info('Command: %s', cmd)
@@ -686,7 +686,7 @@ class Host(models.Model):
         if source_ip == 'any':
             nmap_source = ''
         else:
-            nmap_source = '-S {0:s}'.format(source_ip)
+            nmap_source = '-S {0:s}'.format(str(source_ip))
 
         cmd = nmap_command.format(timing, nmap_source, xml_filename, self.address)
         logger.info('Command: %s', cmd)
@@ -761,7 +761,7 @@ class Host(models.Model):
         if source_ip == 'any':
             nmap_source = ''
         else:
-            nmap_source = '-S {0:s}'.format(source_ip)
+            nmap_source = '-S {0:s}'.format(str(source_ip))
 
         cmd = '/usr/local/bin/nmap -sn -PE -PP -PS22,80,389,443,445,636,1352,1414,1434,1521,2222,3306,3389,5432,5672,5984,8080,8443,9080,9043,9060,9200,9443,27017,50000 -n {0:s} -oX {1:s} {2:s}'.format(nmap_source, xml_filename, self.address)
         logger.info('Command: %s', cmd)

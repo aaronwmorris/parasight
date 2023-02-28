@@ -85,7 +85,7 @@ class Site(models.Model):
         random.shuffle(source_list)
 
         source_ip = str(source_list[0])
-        logger.info('Found source address for scan: %s', source_ip)
+        logger.info('Found source address for scan: %s', str(source_ip))
 
         return source_ip
 
@@ -292,12 +292,12 @@ class Network(models.Model):
         cmd = '/usr/local/bin/nmap -sn -PE -PP -PS22,80,389,443,445,636,1352,1414,1434,1521,2222,3306,3389,5432,5672,5984,8080,8443,9080,9043,9060,9200,9443,27017,50000 -n {0:s} -oX {1:s} {2:s}'.format(nmap_source, xml_filename, self.network)
 
 
-        logger.warn('Running network discovery with source IP: %s', source_ip)
+        logger.warn('Running network discovery with source IP: %s', str(source_ip))
         nmap = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         nmap_stdout, nmap_stderr = nmap.communicate()
 
         if nmap.returncode > 0:
-            raise Exception('Problem discovering network {0:d}: {1:s}'.format(self.id, nmap_stderr))
+            raise Exception('Problem discovering network {0:d}: {1:s}'.format(self.id, nmap_stderr.decode()))
 
 
 

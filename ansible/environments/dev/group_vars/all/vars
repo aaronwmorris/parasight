@@ -9,6 +9,6 @@ parasight_db_passwd: "{{ vault_parasight_db_passwd }}"
 parasight_ssl_ca: selfsigned
 parasight_ssl_crt: selfsigned
 parasight_ssl_key: selfsigned
-parasight_rabbitmq_vhost: /parasight_dev
+parasight_rabbitmq_vhost: parasight_dev
 parasight_rabbitmq_user: parasight_mqown
 parasight_rabbitmq_passwd: "{{ vault_parasight_rabbitmq_passwd }}"

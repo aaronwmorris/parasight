@@ -1,14 +1,8 @@
- 1.  Install RabbitMQ
-    * Setup web admin (optional)
-        sudo rabbitmq-plugins enable rabbitmq_management
-    * Create magnum-dev virtual host
-        sudo rabbitmqctl add_vhost parasight-dev
-    * Create parasight-dev user, parasight-dev virtual host, administrator
-        sudo rabbitmqctl add_user parasight-dev password
-        sudo rabbitmqctl set_permissions -p parasight-dev parasight-dev ".*" ".*" ".*"
-        sudo rabbitmqctl set_user_tags parasight-dev management
- 1.  Setup database
-    * psql
-        CREATE USER parasight_own WITH PASSWORD 'password';
-        DROP DATABASE parasight_dev;
-        CREATE DATABASE parasight_dev OWNER parasight_own ENCODING 'UTF8';
+# Setup Scan
+1. Site scan source
+    * Use worker source IP
+1. Site queue
+    * Celery queue name should be the hostname short name
+1. Site
+1. Zone
+

@@ -96,7 +96,7 @@ DATABASES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CELERY_BROKER_URL                = 'amqps://{{ parasight_rabbitmq_user }}:{{ parasight_rabbitmq_passwd }}@localhost:5671{{ parasight_rabbitmq_vhost }}'
+CELERY_BROKER_URL                = 'amqps://{{ parasight_rabbitmq_user }}:{{ parasight_rabbitmq_passwd }}@localhost:5671/{{ parasight_rabbitmq_vhost }}'
 CELERY_BROKER_USE_SSL = {
     #'keyfile'       : '/var/ssl/private/worker-key.pem',
     #'certfile'      : '/var/ssl/amqp-server-cert.pem',

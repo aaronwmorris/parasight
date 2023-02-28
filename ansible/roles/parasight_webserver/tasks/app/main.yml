@@ -32,18 +32,10 @@
     dest: /home/parasight/git/parasight
     umask: '0077'
     accept_hostkey: yes
+  become: true
+  become_user: parasight
   when:
     - parasight_git_folder.changed
-
-
-
-- name: Change ownership of checkout
-  file:
-    path: /home/parasight/git/parasight
-    state: directory
-    owner: parasight
-    group: parasight
-    recurse: yes
 
 
 - name: Create virtualenv directory

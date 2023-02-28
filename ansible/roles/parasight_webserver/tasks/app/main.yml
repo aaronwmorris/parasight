@@ -3,7 +3,7 @@
 - name: Add the parasight user
   user:
     name: parasight
-    shell: /bin/bash
+    shell: /usr/sbin/nologin
     create_home: yes
     home: /home/parasight
     comment: Parasight service account
@@ -22,7 +22,7 @@
     state: directory
     owner: parasight
     group: parasight
-    mode: '0755'
+    mode: '0711'
   register: parasight_git_folder
 
 
@@ -46,14 +46,13 @@
     recurse: yes
 
 
-
 - name: Create virtualenv directory
   file:
     path: /home/parasight/virtualenv
     state: directory
     owner: parasight
     group: parasight
-    mode: '0755'
+    mode: '0711'
   register: parasight_virtualenv_folder
 
 
@@ -75,7 +74,7 @@
     dest: /home/parasight/gunicorn.conf.py
     owner: parasight
     group: parasight
-    mode: '0022'
+    mode: '0600'
 
 
 - name: Template parasight gunicorn socket
@@ -120,7 +119,7 @@
 #    dest: /home/parasight/git/parasight/mysite/settings.py
 #    owner: parasight
 #    group: parasight
-#    mode: '0755'
+#    mode: '0700'
 
 
 #- name: Template parasight wsgi.py
@@ -129,7 +128,7 @@
 #    dest: /home/parasight/git/parasight/mysite/wsgi.py
 #    owner: parasight
 #    group: parasight
-#    mode: '0755'
+#    mode: '0700'
 
 
 

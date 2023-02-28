@@ -82,7 +82,7 @@ class Site(models.Model):
             source_list.append(list(ipaddress.ip_network(source.network)))
 
 
-        random.suffle(source_list)
+        random.shuffle(source_list)
 
         source_ip = str(source_list[0])
         logger.info('Found source address for scan: %s', source_ip)

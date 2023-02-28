@@ -69,13 +69,13 @@
     - parasight_virtualenv_folder.changed
 
 
-- name: Change ownership of checkout
+- name: Copy gunicorn config
   copy:
     src: gunicorn.conf.py
     dest: /home/parasight/gunicorn.conf.py
     owner: parasight
     group: parasight
-    umask: '0022'
+    mode: '0022'
 
 
 - name: Template parasight gunicorn socket
@@ -108,7 +108,7 @@
     enabled: True
 
 
-- name: Start gunicorn service
+- name: Enable gunicorn service
   systemd:
     name: gunicorn-parasight.service
     enabled: True

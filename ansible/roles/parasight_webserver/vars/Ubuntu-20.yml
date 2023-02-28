@@ -21,8 +21,9 @@ parasight_python: python3.8
 parasight_python_ver: python3.8
 parasight_pip: pip3
 apache_mods:
-  - proxy
-  - proxy_http
+  - proxy.load
+  - proxy.conf
+  - proxy_http.load
   - ssl.load
   - ssl.conf
   - socache_shmcb.load

@@ -4,3 +4,4 @@ psycopg2
 SQLAlchemy
 django-auth-ldap
 gunicorn[gthread]
+inotify

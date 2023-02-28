@@ -23,6 +23,7 @@
 - name: Create nmap build folder
   file:
     path: "{{ nmap_build }}"
+    owner: "{{ ansible_ssh_user }}"
     state: directory
 
 
@@ -41,17 +42,20 @@
     version: "{{ nmap_git_tag }}"
     refspec: "{{ nmap_git_refspec }}"
     #force: yes
+  become: False
 
 
 - name: Setup nmap build
   command:
     cmd: "./configure --prefix=/usr/local"
     chdir: "{{ nmap_build }}"
+  become: False
 
 
 - name: Build nmap
   community.general.make:
     chdir: "{{ nmap_build }}"
+  become: False
 
 
 - name: Install nmap

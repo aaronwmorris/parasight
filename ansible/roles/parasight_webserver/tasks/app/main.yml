@@ -28,7 +28,7 @@
 
 - name: Checkout parasight code
   git:
-    repo: 'git@github.com:aaronwmorris/parasight.git'
+    repo: 'https://github.com/aaronwmorris/parasight.git'
     dest: /home/parasight/git/parasight
     umask: '0077'
     accept_hostkey: yes

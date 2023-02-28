@@ -1,4 +1,4 @@
 ---
 
-- include: "install/{{ ansible_facts['os_family'] }}.yml"
+- include_tasks: "{{ ansible_facts['os_family'] }}.yml"
 

@@ -20,8 +20,8 @@
     - parasight_remove_packages | length > 0
 
 
-- include: install/main.yml
+- include_tasks: install/main.yml
 
 
-- include: nmap/main.yml
+- include_tasks: nmap/main.yml
 

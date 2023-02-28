@@ -1,6 +1,6 @@
 ---
 
-- include: "nmap/install/main.yml"
+- include_tasks: "install/main.yml"
 
 
 - set_fact:

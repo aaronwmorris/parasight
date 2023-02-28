@@ -16,8 +16,8 @@
 <VirtualHost *:443>
     ProxyPreserveHost On
     ProxyPass /static !
-    ProxyPass / unix:/tmp/gunicorn.sock
-    ProxyPassReverse / unix:/tmp/gunicorn.sock
+    ProxyPass / unix:/tmp/gunicorn.sock|http://localhost
+    ProxyPassReverse / unix:/tmp/gunicorn.sock|http://localhost
     #ProxyTimeout 180
 
     Alias /static/parasight /home/parasight/git/parasight/parasight/static/parasight

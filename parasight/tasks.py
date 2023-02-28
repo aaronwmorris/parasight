@@ -18,7 +18,7 @@ class TestTask(Task):
     name = 'parasight.tasks.TestTask'
 
 
-celery_app.tasks.register(TestTask())
+celery_app.register_task(TestTask())
 
 
 
@@ -53,7 +53,7 @@ class DiscoverAllHosts(Task):
                     task.apply_async(queue=site.queue.name)
 
 
-celery_app.tasks.register(DiscoverAllHosts())
+celery_app.register_task(DiscoverAllHosts())
 
 
 
@@ -66,7 +66,7 @@ class DiscoverHostAtSite(Task):
         host.runDiscoveryAtSite(site_id)
 
 
-celery_app.tasks.register(DiscoverHostAtSite())
+celery_app.register_task(DiscoverHostAtSite())
 
 
 
@@ -94,7 +94,7 @@ class DiscoverAllNetworks(Task):
                 task.apply_async(queue=site.queue.name)
 
 
-celery_app.tasks.register(DiscoverAllNetworks())
+celery_app.register_task(DiscoverAllNetworks())
 
 
 
@@ -108,7 +108,7 @@ class DiscoverNetworkAtSite(Task):
         network.runDiscoveryAtSite(site_id)
 
 
-celery_app.tasks.register(DiscoverNetworkAtSite())
+celery_app.register_task(DiscoverNetworkAtSite())
 
 
 
@@ -152,7 +152,7 @@ class AbstractScanAllHosts(Task):
                     task = task_class().si(host.id, site.id)
                     task.apply_async(queue=site.queue.name)
 
-#celery_app.tasks.register(AbstractScanAllHosts())
+#celery_app.register_task(AbstractScanAllHosts())
 
 
 class FastScanAllHosts(AbstractScanAllHosts):
@@ -161,7 +161,7 @@ class FastScanAllHosts(AbstractScanAllHosts):
     _scan_class_str = 'FastScanHostAtSite'
 
 
-celery_app.tasks.register(FastScanAllHosts())
+celery_app.register_task(FastScanAllHosts())
 
 
 
@@ -171,7 +171,7 @@ class NormalScanAllHosts(AbstractScanAllHosts):
     _scan_class_str = 'NormalScanHostAtSite'
 
 
-celery_app.tasks.register(NormalScanAllHosts())
+celery_app.register_task(NormalScanAllHosts())
 
 
 class FullScanAllHosts(AbstractScanAllHosts):
@@ -180,7 +180,7 @@ class FullScanAllHosts(AbstractScanAllHosts):
     _scan_class_str = 'FullScanHostAtSite'
 
 
-celery_app.tasks.register(FullScanAllHosts())
+celery_app.register_task(FullScanAllHosts())
 
 
 
@@ -198,7 +198,7 @@ class AbstractScanHostAtSite(Task):
 
         scan_method(site_id)
 
-#celery_app.tasks.register(AbstractScanHostAtSite())
+#celery_app.register_task(AbstractScanHostAtSite())
 
 
 
@@ -208,7 +208,7 @@ class FastScanHostAtSite(AbstractScanHostAtSite):
     _scan_method_str = 'fastScan'
 
 
-celery_app.tasks.register(FastScanHostAtSite())
+celery_app.register_task(FastScanHostAtSite())
 
 
 
@@ -218,7 +218,7 @@ class NormalScanHostAtSite(AbstractScanHostAtSite):
     _scan_method_str = 'normalScan'
 
 
-celery_app.tasks.register(NormalScanHostAtSite())
+celery_app.register_task(NormalScanHostAtSite())
 
 
 class FullScanHostAtSite(AbstractScanHostAtSite):
@@ -227,7 +227,7 @@ class FullScanHostAtSite(AbstractScanHostAtSite):
     _scan_method_str = 'fullScan'
 
 
-celery_app.tasks.register(FullScanHostAtSite())
+celery_app.register_task(FullScanHostAtSite())
 
 ### END HOST SCANS ###
 
@@ -265,7 +265,7 @@ class AbstractScanAllNetworks(Task):
                 task = task_class().si(network.id, site.id)
                 task.apply_async(queue=site.queue.name)
 
-#celery_app.tasks.register(AbstractScanAllNetworks())
+#celery_app.register_task(AbstractScanAllNetworks())
 
 
 class FastScanAllNetworks(AbstractScanAllNetworks):
@@ -274,7 +274,7 @@ class FastScanAllNetworks(AbstractScanAllNetworks):
     _scan_class_str = 'FastScanNetworkAtSite'
 
 
-celery_app.tasks.register(FastScanAllNetworks())
+celery_app.register_task(FastScanAllNetworks())
 
 
 
@@ -284,7 +284,7 @@ class NormalScanAllNetworks(AbstractScanAllNetworks):
     _scan_class_str = 'NormalScanNetworkAtSite'
 
 
-celery_app.tasks.register(NormalScanAllNetworks())
+celery_app.register_task(NormalScanAllNetworks())
 
 
 class FullScanAllNetworks(AbstractScanAllNetworks):
@@ -293,7 +293,7 @@ class FullScanAllNetworks(AbstractScanAllNetworks):
     _scan_class_str = 'FullScanNetworkAtSite'
 
 
-celery_app.tasks.register(FullScanAllNetworks())
+celery_app.register_task(FullScanAllNetworks())
 
 
 
@@ -310,7 +310,7 @@ class AbstractScanNetworkAtSite(Task):
 
         scan_method(site_id)
 
-#celery_app.tasks.register(AbstractScanNetworkAtSite())
+#celery_app.register_task(AbstractScanNetworkAtSite())
 
 
 
@@ -320,7 +320,7 @@ class FastScanNetworkAtSite(AbstractScanNetworkAtSite):
     _scan_method_str = 'fastScan'
 
 
-celery_app.tasks.register(FastScanNetworkAtSite())
+celery_app.register_task(FastScanNetworkAtSite())
 
 
 
@@ -330,7 +330,7 @@ class NormalScanNetworkAtSite(AbstractScanNetworkAtSite):
     _scan_method_str = 'normalScan'
 
 
-celery_app.tasks.register(NormalScanNetworkAtSite())
+celery_app.register_task(NormalScanNetworkAtSite())
 
 
 class FullScanNetworkAtSite(AbstractScanNetworkAtSite):
@@ -339,4 +339,4 @@ class FullScanNetworkAtSite(AbstractScanNetworkAtSite):
     _scan_method_str = 'fullScan'
 
 
-celery_app.tasks.register(FullScanNetworkAtSite())
+celery_app.register_task(FullScanNetworkAtSite())

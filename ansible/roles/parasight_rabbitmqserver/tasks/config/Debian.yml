@@ -127,6 +127,8 @@
 
 
 
+### if you get an error here, make sure you do *NOT* have the /etc/hosts entry defined for 127.0.1.1
+
 - name: Create parasight rabbitmq vhost
   rabbitmq_vhost:
     name: "{{ parasight_rabbitmq_vhost }}"

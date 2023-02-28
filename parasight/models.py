@@ -76,9 +76,9 @@ class Site(models.Model):
             pass
 
 
-        source_list = self.sources.filter(enabled=True)
+        sources_enabled = self.sources.filter(enabled=True)
 
-        for source in source_list:
+        for source in sources_enabled:
             source_list.append(list(ipaddress.ip_network(source.network)))
 
 

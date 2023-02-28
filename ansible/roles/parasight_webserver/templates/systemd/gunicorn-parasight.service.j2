@@ -1,0 +1,16 @@
+[Unit]
+Description=parasight gunicorn daemon
+Requires=/tmp/gunicorn-parasight.sock
+After=network.target
+
+[Service]
+Type=notify
+User=parasight
+WorkingDirectory=/home/parasight/git/parasight
+ExecStart=/home/parasight/virtualenv/parasight_{{ parasight_python }}/bin/gunicorn --config /home/parasight/gunicorn-parasight.conf.py mysite.wsgi
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Nice=10
+UMask=0022

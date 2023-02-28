@@ -1,0 +1,9 @@
+[Unit]
+Description=parasight gunicorn socket
+
+[Socket]
+ListenStream=/tmp/gunicorn-parasight.sock
+SocketMode=666
+
+[Install]
+WantedBy=sockets.target

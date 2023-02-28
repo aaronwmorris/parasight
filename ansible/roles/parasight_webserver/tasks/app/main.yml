@@ -69,6 +69,51 @@
     - parasight_virtualenv_folder.changed
 
 
+- name: Change ownership of checkout
+  copy:
+    src: gunicorn.conf.py
+    dest: /home/parasight/gunicorn.conf.py
+    owner: parasight
+    group: parasight
+    umask: '0022'
+
+
+- name: Template parasight gunicorn socket
+  template:
+    src: systemd/gunicorn-parasight.socket.j2
+    dest: /etc/systemd/system/gunicorn-parasight.socket
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Template parasight gunicorn service
+  template:
+    src: systemd/gunicorn-parasight.service.j2
+    dest: /etc/systemd/system/gunicorn-parasight.service
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: systemd reload
+  systemd:
+    daemon_reload: True
+
+
+- name: Start gunicorn socket
+  systemd:
+    name: gunicorn-parasight.socket
+    state: started
+    enabled: True
+
+
+- name: Start gunicorn service
+  systemd:
+    name: gunicorn-parasight.service
+    enabled: True
+
+
 #- name: Template parasight settings.py
 #  template:
 #    src: ../../../../mysite/settings.py_template

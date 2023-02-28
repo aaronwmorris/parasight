@@ -69,6 +69,15 @@
     mode: '0600'
 
 
+- name: Create /var/lib folder
+  file:
+    path: /var/lib/parasight
+    state: directory
+    owner: root
+    group: root
+    mode: '0711'
+
+
 - name: Template parasight gunicorn socket
   template:
     src: systemd/gunicorn-parasight.socket.j2

@@ -79,7 +79,7 @@ class Site(models.Model):
         sources_enabled = self.sources.filter(enabled=True)
 
         for source in sources_enabled:
-            source_list.append(list(ipaddress.ip_network(source.network)))
+            source_list.append(ipaddress.ip_network(source.network))
 
 
         random.shuffle(source_list)

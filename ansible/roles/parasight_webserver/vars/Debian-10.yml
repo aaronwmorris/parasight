@@ -20,6 +20,7 @@ packages:
   - python3-virtualenv
   - python3-setuptools
   - python3-dev
+  - cron
 parasight_python: python3.7
 parasight_python_ver: python3.7
 parasight_pip: pip3

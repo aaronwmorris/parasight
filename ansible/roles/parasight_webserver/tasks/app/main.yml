@@ -22,7 +22,7 @@
     state: directory
     owner: parasight
     group: parasight
-    mode: '0711'
+    mode: '0700'
   register: parasight_git_folder
 
 
@@ -30,7 +30,7 @@
   git:
     repo: 'git@github.com:aaronwmorris/parasight.git'
     dest: /home/parasight/git/parasight
-    umask: '0022'
+    umask: '0077'
     accept_hostkey: yes
   when:
     - parasight_git_folder.changed

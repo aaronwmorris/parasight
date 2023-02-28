@@ -1,8 +1,14 @@
 # Setup Scan
-1. Site scan source
+1. Add `Site scan source`
     * Use worker source IP
-1. Site queue
+1. Add `Site queue`
     * Celery queue name should be the hostname short name
-1. Site
-1. Zone
+1. Add `Site`
+    * Descriptive name
+1. Add `Zone`
+    * Internal/external, etc
+1. Add Networks
+    * IP/CIDR
+    * Run `Network Discovery` task
+    * Run scan
 

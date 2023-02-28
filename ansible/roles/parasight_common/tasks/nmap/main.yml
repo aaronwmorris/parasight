@@ -4,7 +4,7 @@
 
 
 - set_fact:
-    nmap_build: "/usr/src/nmap"
+    nmap_build: "/usr/local/src/nmap"
   tags:
     - always
 

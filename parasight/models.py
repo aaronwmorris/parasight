@@ -1041,10 +1041,21 @@ class ScanPort(models.Model):
     def __str__(self):
         if self.serviceInfo:
             try:
-                name = self.serviceInfo.get(key='name')
-                return '{0:d}/{1:s} ({2:s}) - {3:s}'.format(self.port, self.protocol, name.value, self.state)
+                name = self.serviceInfo.get(key='name').value
             except ScanPortServiceInfo.DoesNotExist:
-                pass
+                name = ''
+
+            try:
+                product = self.serviceInfo.get(key='product').value
+            except ScanPortServiceInfo.DoesNotExist:
+                product = ''
+
+            try:
+                version = self.serviceInfo.get(key='version').value
+            except ScanPortServiceInfo.DoesNotExist:
+                version = ''
+
+            return '{0:d}/{1:s} - {2:s} ({3:s} {4:s} {5:s})'.format(self.port, self.protocol, self.state, name, product, version)
 
         return '{0:d}/{1:s} - {2:s}'.format(self.port, self.protocol, self.state)
 

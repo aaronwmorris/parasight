@@ -111,8 +111,6 @@ class DiscoverNetworkAtSite(Task):
 celery_app.register_task(DiscoverNetworkAtSite())
 
 
-
-
 ### START HOST SCANS ###
 
 class AbstractScanAllHosts(Task):
@@ -230,8 +228,6 @@ class FullScanHostAtSite(AbstractScanHostAtSite):
 celery_app.register_task(FullScanHostAtSite())
 
 ### END HOST SCANS ###
-
-
 
 
 ### START NETWORK SCANS ###

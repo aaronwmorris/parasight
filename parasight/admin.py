@@ -271,7 +271,7 @@ class Network_Admin(admin.ModelAdmin):
     networkDiscoveries_count.short_description = 'Discovery Count'
 
     def get_readonly_fields(self, request, obj=None):
-        if obj: # editing an existing object
+        if obj:  # editing an existing object
             return self.readonly_fields + ('network',)
         return self.readonly_fields
 
@@ -402,7 +402,7 @@ class Host_Admin(admin.ModelAdmin):
     hostDiscoveries_count.short_description = 'Discovery Count'
 
     def get_readonly_fields(self, request, obj=None):
-        if obj: # editing an existing object
+        if obj:  # editing an existing object
             return self.readonly_fields + ('address',)
         return self.readonly_fields
 

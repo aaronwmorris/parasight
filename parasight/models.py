@@ -158,13 +158,13 @@ def Network_network_cidr_validator(network_str):
         if network.prefixlen < 118:
             raise ValidationError(
                 _('%(network)s is too large.  Please restrict to 1024 addresses.'),
-                params={'network': network_str,},
+                params={'network': network_str, },
             )
     else:
         if network.prefixlen < 22:
             raise ValidationError(
                 _('%(network)s is too large.  Please restrict to 1024 addresses.'),
-                params={'network': network_str,},
+                params={'network': network_str, },
             )
 
 
@@ -223,13 +223,13 @@ class Network(models.Model):
                 if not self.staticRouted:
                     ip_gen = sub_network.hosts()
                 else:
-                    ip_gen = sub_network  #include network IP
+                    ip_gen = sub_network  # include network IP
 
             else:
                 if not self.staticRouted:
                     ip_gen = network.hosts()
                 else:
-                    ip_gen = network  #include network IP
+                    ip_gen = network  # include network IP
 
         else:
             logger.info('Network is IPv4')
@@ -245,12 +245,12 @@ class Network(models.Model):
                 if not self.staticRouted:
                     ip_gen = sub_network.hosts()
                 else:
-                    ip_gen = sub_network  #include network IP and broadcast
+                    ip_gen = sub_network  # include network IP and broadcast
             else:
                 if not self.staticRouted:
                     ip_gen = network.hosts()
                 else:
-                    ip_gen = network  #include network IP and broadcast
+                    ip_gen = network  # include network IP and broadcast
 
 
         for ip in ip_gen:

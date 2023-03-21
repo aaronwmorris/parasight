@@ -1055,7 +1055,7 @@ class ScanPort(models.Model):
             except ScanPortServiceInfo.DoesNotExist:
                 version = ''
 
-            return '{0:d}/{1:s} - {2:s} ({3:s} {4:s} {5:s})'.format(self.port, self.protocol, self.state, name, product, version)
+            return '{0:d}/{1:s} - {2:s} ({3:s} - {4:s} - {5:s})'.format(self.port, self.protocol, self.state, name, product, version)
 
         return '{0:d}/{1:s} - {2:s}'.format(self.port, self.protocol, self.state)
 

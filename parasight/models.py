@@ -1052,7 +1052,7 @@ class HostScan(models.Model):
         wb.iso_dates = True
 
         ws = wb.create_sheet()
-        ws.title = self.hostname
+        ws.title = self.host_set[0].address
         ws.append(['Hostname', self.host_set[0].address])
         ws.append(['Scan Date', self.scanDate])
         ws.append(['Nmap', self.nmap_version])

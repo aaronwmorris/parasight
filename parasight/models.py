@@ -24,7 +24,7 @@ from django.db.models import Q
 from django.db.models import F
 from django.db.models import Value
 from django.db.models import CharField
-from django.core.files.base import ContentFile
+#from django.core.files.base import ContentFile
 
 logger = logging.getLogger(__name__)
 
@@ -1061,7 +1061,7 @@ class HostScan(models.Model):
         file_data = io.BytesIO()
         wb.save(file_data)
 
-        self.report.save('foobar', ContentFile(file_data.read()))  # file name not needed here
+        self.report.save('foobar', file_data)  # file name not needed here
         self.save()
 
 

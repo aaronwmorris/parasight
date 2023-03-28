@@ -114,24 +114,38 @@
     enabled: True
 
 
-#- name: Template parasight settings.py
-#  template:
-#    src: ../../../../mysite/settings.py_template
-#    dest: /home/parasight/git/parasight/mysite/settings.py
-#    owner: parasight
-#    group: parasight
-#    mode: '0700'
+- name: Check for settings.py
+  stat:
+    path: ../../../../mysite/settings.py
+  register: settings_py_stat
 
 
-#- name: Template parasight wsgi.py
-#  template:
-#    src: ../../../../mysite/wsgi.py_template
-#    dest: /home/parasight/git/parasight/mysite/wsgi.py
-#    owner: parasight
-#    group: parasight
-#    mode: '0700'
+- name: Template parasight settings.py
+  template:
+    src: ../../../../mysite/settings.py_template
+    dest: /home/parasight/git/parasight/mysite/settings.py
+    owner: parasight
+    group: parasight
+    mode: '0700'
+  when:
+    - not settings_py_stat.stat.exists
 
 
+- name: Check for wsgi.py
+  stat:
+    path: ../../../../mysite/wsgi.py
+  register: wsgi_py_stat
+
+
+- name: Template parasight wsgi.py
+  template:
+    src: ../../../../mysite/wsgi.py_template
+    dest: /home/parasight/git/parasight/mysite/wsgi.py
+    owner: parasight
+    group: parasight
+    mode: '0700'
+  when:
+    - not wsgi_py_stat.stat.exists
 
 
 #- name: Create parasight migrations

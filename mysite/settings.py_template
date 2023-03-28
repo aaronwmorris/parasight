@@ -194,6 +194,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = Path().home().joinpath('uploads')
+MEDIA_URL = '/static/uploads/'
 
 
 #ldap_logger = logging.getLogger('django_auth_ldap')

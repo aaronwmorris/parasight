@@ -1047,6 +1047,8 @@ class HostScan(models.Model):
 
     def generateHostScanReport(self):
 
+        self.report.delete()  # delete existing report
+
         # Excel
         wb = Workbook(write_only=True)
         wb.iso_dates = True

@@ -502,6 +502,9 @@ class HostScan_Admin(admin.ModelAdmin):
         'scantime',
         'complete',
     ]
+    actions = [
+        'generateHostScanReport',
+    ]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)\
@@ -525,6 +528,14 @@ class HostScan_Admin(admin.ModelAdmin):
         return obj.host_set.first().address
     get_host_address.admin_order_field = 'host__address'
     get_host_address.short_description = 'Host'
+
+
+    def generateHostScanReport(self, request, qs):
+        for scan in qs:
+            scan.generateHostScanReport()
+
+        self.message_user(request, 'Generated {0:d} host scan reports'.format(qs.count()))
+    generateHostScanReport.short_description = 'Generate Scan Report'
 
 
 admin.site.register(HostScan, HostScan_Admin)

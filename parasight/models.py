@@ -5,8 +5,14 @@ import re
 import random
 import tempfile
 import subprocess
+import io
+from datetime import datetime
+from pathlib import Path
 import logging
+
 import xml.etree.ElementTree as ET
+
+from openpyxl import Workbook
 
 from django.db import models
 from django.utils import timezone as django_timezone
@@ -18,6 +24,7 @@ from django.db.models import Q
 from django.db.models import F
 from django.db.models import Value
 from django.db.models import CharField
+#from django.core.files.base import ContentFile
 
 logger = logging.getLogger(__name__)
 
@@ -909,6 +916,15 @@ class HostDiscovery(models.Model):
 
 
 
+def getHostScanReportPath(instance, filename):
+    base_dir = Path('hostScanReport')
+
+    now = datetime.now()
+    new_filename = 'hostScanReport_{0:d}_{1:s}_{2:s}.xlsx'.format(instance.id, instance.hostname, now.strftime('%y%m%d_%H%M%S'))
+
+    return base_dir.joinpath(str(instance.id), new_filename)
+
+
 class HostScan(models.Model):
     scanDate       = models.DateTimeField(default=django_timezone.now)
     site           = models.ForeignKey('Site', on_delete=models.PROTECT)
@@ -924,6 +940,7 @@ class HostScan(models.Model):
     endtime        = models.IntegerField(null=True, blank=True)
     scanType       = models.CharField(max_length=10)
     complete       = models.BooleanField(default=False)
+    report         = models.FileField(upload_to=getHostScanReportPath, null=True, blank=True)
     xmlText        = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -1027,6 +1044,25 @@ class HostScan(models.Model):
         self.complete = True
         self.save()
 
+
+    def generateHostScanReport(self):
+
+        # Excel
+        wb = Workbook(write_only=True)
+        wb.iso_dates = True
+
+        ws = wb.create_sheet()
+        ws.title = self.hostname
+        ws.append(['Hostname', self.hostname])
+        ws.append(['Scan Date', self.scanDate])
+        ws.append(['Nmap', self.nmap_version])
+
+
+        file_data = io.BytesIO()
+        wb.save(file_data)
+
+        self.report = file_data
+        self.save()
 
 
 class ScanPort(models.Model):

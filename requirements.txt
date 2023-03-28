@@ -5,3 +5,4 @@ SQLAlchemy
 django-auth-ldap
 gunicorn[gthread]
 inotify
+openpyxl

@@ -1061,7 +1061,7 @@ class HostScan(models.Model):
         file_data = io.BytesIO()
         wb.save(file_data)
 
-        self.report = ContentFile(file_data.read())
+        self.report.save('foobar', ContentFile(file_data.read()))  # file name not needed here
         self.save()
 
 

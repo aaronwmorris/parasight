@@ -21,6 +21,7 @@ packages:
   - python3-setuptools
   - python3-dev
   - cron
+  - rsyslog
 parasight_python: python3.6
 parasight_python_ver: python3.6
 parasight_pip: pip3

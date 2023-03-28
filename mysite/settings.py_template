@@ -94,7 +94,7 @@ DATABASES = {
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 CELERY_BROKER_URL                = 'amqps://{{ parasight_rabbitmq_user }}:{{ parasight_rabbitmq_passwd }}@localhost:5671/{{ parasight_rabbitmq_vhost }}'
 CELERY_BROKER_USE_SSL = {
@@ -192,6 +192,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = Path().home().joinpath('uploads')
 
 
 #ldap_logger = logging.getLogger('django_auth_ldap')

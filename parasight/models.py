@@ -920,7 +920,7 @@ def getHostScanReportPath(instance, filename):
     base_dir = Path('hostScanReport')
 
     now = datetime.now()
-    new_filename = 'hostScanReport_{0:d}_{1:s}_{2:s}.xlsx'.format(instance.id, instance.hostname, now.strftime('%y%m%d_%H%M%S'))
+    new_filename = 'hostScanReport_{0:d}_{1:s}_{2:s}.xlsx'.format(instance.id, instance.host_set.first().address, now.strftime('%y%m%d_%H%M%S'))
 
     return base_dir.joinpath(str(instance.id), new_filename)
 

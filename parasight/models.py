@@ -1077,19 +1077,19 @@ class HostScan(models.Model):
                 name = scan_port.serviceInfo.get(key='name').value
                 port_info.append(name)
             except ScanPortServiceInfo.DoesNotExist:
-                port_info.append(None)
+                port_info.append('Not Detected')
 
             try:
                 product = scan_port.serviceInfo.get(key='product').value
                 port_info.append(product)
             except ScanPortServiceInfo.DoesNotExist:
-                port_info.append(None)
+                port_info.append('Not Detected')
 
             try:
                 version = scan_port.serviceInfo.get(key='version').value
                 port_info.append(version)
             except ScanPortServiceInfo.DoesNotExist:
-                port_info.append(None)
+                port_info.append('Not Detected')
 
             ws.append(port_info)
 

@@ -1066,7 +1066,7 @@ class HostScan(models.Model):
         ws.append([])
 
 
-        ws.append(['Port', 'Protocol', 'State', 'Name', 'Product', 'Version'])
+        ws.append(['Port', 'Protocol', 'State', 'Service', 'Product', 'Version'])
         for scan_port in self.scanPorts.all():
             port_info = [scan_port.port, scan_port.protocol, scan_port.state]
 

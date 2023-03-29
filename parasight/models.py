@@ -1058,6 +1058,37 @@ class HostScan(models.Model):
         ws.append(['Hostname', self.host_set.first().address])
         ws.append(['Scan Date', self.scanDate.replace(tzinfo=None)])
         ws.append(['Nmap', self.nmap_version])
+        ws.append(['Scanned Ports', self.numservices])
+        ws.append(['Refused Ports', self.refusedports])
+        ws.append(['Filtered Ports', self.filteredports])
+        ws.append(['Scan time', int(self.endtime - self.starttime)])
+        ws.append([])
+        ws.append([])
+
+
+        ws.append(['Port', 'Protocol', 'State', 'Name', 'Product', 'Version'])
+        for port in self.scanPorts.all():
+            port_info = [port.port, port.protocol, port.state]
+
+            try:
+                name = self.serviceInfo.get(key='name').value
+                port_info.append(name)
+            except ScanPortServiceInfo.DoesNotExist:
+                port_info.append(None)
+
+            try:
+                product = self.serviceInfo.get(key='product').value
+                port_info.append(product)
+            except ScanPortServiceInfo.DoesNotExist:
+                port_info.append(None)
+
+            try:
+                version = self.serviceInfo.get(key='version').value
+                port_info.append(version)
+            except ScanPortServiceInfo.DoesNotExist:
+                port_info.append(None)
+
+            ws.append(port_info)
 
 
         file_data = io.BytesIO()

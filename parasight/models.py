@@ -1067,23 +1067,23 @@ class HostScan(models.Model):
 
 
         ws.append(['Port', 'Protocol', 'State', 'Name', 'Product', 'Version'])
-        for port in self.scanPorts.all():
-            port_info = [port.port, port.protocol, port.state]
+        for scan_port in self.scanPorts.all():
+            port_info = [scan_port.port, scan_port.protocol, scan_port.state]
 
             try:
-                name = self.serviceInfo.get(key='name').value
+                name = scan_port.serviceInfo.get(key='name').value
                 port_info.append(name)
             except ScanPortServiceInfo.DoesNotExist:
                 port_info.append(None)
 
             try:
-                product = self.serviceInfo.get(key='product').value
+                product = scan_port.serviceInfo.get(key='product').value
                 port_info.append(product)
             except ScanPortServiceInfo.DoesNotExist:
                 port_info.append(None)
 
             try:
-                version = self.serviceInfo.get(key='version').value
+                version = scan_port.serviceInfo.get(key='version').value
                 port_info.append(version)
             except ScanPortServiceInfo.DoesNotExist:
                 port_info.append(None)

@@ -1060,7 +1060,7 @@ class HostScan(models.Model):
         ws.append(['Host', host.address])
         ws.append(['Scan Date', self.scanDate.replace(tzinfo=None)])
         ws.append(['Nmap', self.nmap_version])
-        ws.append(['Firewall', host.getFirewallState()])
+        ws.append(['Host Firewall', host.getFirewallState()])
         ws.append(['Scanned Ports', self.numservices])
         ws.append(['Refused Ports', self.refusedports])
         ws.append(['Filtered Ports', self.filteredports])

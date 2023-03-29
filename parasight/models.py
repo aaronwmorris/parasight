@@ -1055,7 +1055,7 @@ class HostScan(models.Model):
 
         ws = wb.create_sheet()
         ws.title = self.host_set.first().address
-        ws.append(['Hostname', self.host_set.first().address])
+        ws.append(['Host', self.host_set.first().address])
         ws.append(['Scan Date', self.scanDate.replace(tzinfo=None)])
         ws.append(['Nmap', self.nmap_version])
         ws.append(['Scanned Ports', self.numservices])

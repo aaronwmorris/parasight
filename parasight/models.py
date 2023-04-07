@@ -282,7 +282,7 @@ class Network(models.Model):
         logger.info('Starting network discovery for %s at site %s', self.network, site.name)
 
         # Get a new tempfile name
-        xml_fh = tempfile.NamedTemporaryFile(delete=False, prefix='parasight_net_', suffix='.xml')
+        xml_fh = tempfile.NamedTemporaryFile(delete=False, suffix='.xml')
         xml_filename = xml_fh.name
         xml_fh.close()
 
@@ -411,7 +411,7 @@ class Network(models.Model):
         logger.info('Starting %s network scan for %s at site %s', scanType, self.network, site.name)
 
         # Get a new tempfile name
-        xml_fh = tempfile.NamedTemporaryFile(delete=False, prefix='parasight_net_', suffix='.xml')
+        xml_fh = tempfile.NamedTemporaryFile(delete=False, suffix='.xml')
         xml_filename = xml_fh.name
         xml_fh.close()
 
@@ -681,7 +681,7 @@ class Host(models.Model):
         logger.info('Starting %s scan for %s at site %s', scanType, self.address, site.name)
 
         # Get a new tempfile name
-        xml_fh = tempfile.NamedTemporaryFile(delete=False, prefix='parasight_', suffix='.xml')
+        xml_fh = tempfile.NamedTemporaryFile(delete=False, suffix='.xml')
         xml_filename = xml_fh.name
         xml_fh.close()
 
@@ -756,7 +756,7 @@ class Host(models.Model):
         logger.info('Starting discovery for %s at site %s', self.address, site.name)
 
         # Get a new tempfile name
-        xml_fh = tempfile.NamedTemporaryFile(delete=False, prefix='parasight_', suffix='.xml')
+        xml_fh = tempfile.NamedTemporaryFile(delete=False, suffix='.xml')
         xml_filename = xml_fh.name
         xml_fh.close()
 
